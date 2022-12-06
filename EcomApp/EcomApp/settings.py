@@ -74,6 +74,8 @@ WSGI_APPLICATION = 'EcomApp.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
+
+# TODO: Change this to your own DB schema in MySQL
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
