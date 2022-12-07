@@ -4,7 +4,9 @@ CREATE TABLE User_Profile(
     name VARCHAR(255) NOT NULL UNIQUE,
     address TEXT,
     role VARCHAR(1) NOT NULL,
-    PRIMARY KEY (id)
+    user_id INT,
+    PRIMARY KEY (id),
+    FOREIGN KEY (user_id) REFERENCES auth_user(id) ON DELETE CASCADE
 );
 
 CREATE TABLE Authen(
