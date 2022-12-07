@@ -73,3 +73,7 @@ def CartView(request):
 @login_required(login_url=reverse_lazy('login'))
 def ProductView(request):
     return render(request, 'product.html')
+
+@login_required(login_url=reverse_lazy('login'))
+def ListingView(request):
+    return render(request, 'listing.html')
