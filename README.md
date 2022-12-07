@@ -2,7 +2,9 @@
 ## Backend system config
 
 ### Install prequisites
-* Install Python Pip packages to run the backend server, you can use any virtual enviroment manager as you prefer.
+* **To run this Project, Python3, pip and MySQL is required.**
+
+* To install Python Pip packages to run the backend server, you can use any virtual enviroment manager as you prefer.
 
 ```
 # example of virtualenv
