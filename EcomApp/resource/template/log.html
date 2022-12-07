@@ -1,0 +1,36 @@
+{% extends 'main.html' %}
+{% load static %}
+
+{% block title %}
+    <title>Log in</title>
+{% endblock title %}
+
+
+{% block content %}
+    <section class="py-5" style="background: rgb(300, 200, 50);">
+        <div class="container py-5">
+            <h2 class="fw-bold mb-2" style="text-align: center;">Log in</h2>
+            <div class="row d-flex justify-content-center">
+                <div class="col-md-6 col-xl-4">
+                    <div>
+                        <form class="p-3 p-xl-4" method="post">
+                            <div class="mb-3"><input class="form-control" type="text" id="name-1" name="name" placeholder="Username"></div>
+                            <div class="mb-3"><input class="form-control" type="email" id="email-1" name="email" placeholder="Password"></div>
+                            <div class="mb-3"></div>
+                            <div><a class="btn btn-primary shadow d-block w-100" role="button" href="home.html">Log in</a></div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="bg-dark border rounded border-dark d-flex flex-column justify-content-between align-items-center flex-lg-row p-4 p-lg-5" style="background: rgb(300, 200, 50);padding-bottom: 0px;">
+            <div class="text-center text-lg-start py-3 py-lg-1">
+                <h2 class="fw-bold mb-2">Sign up</h2>
+            </div>
+            <form class="d-flex justify-content-center flex-wrap flex-lg-nowrap" method="post">
+                <div class="my-2"><input class="border rounded-pill shadow-sm form-control" type="email" name="email" placeholder="Your Email"></div>
+                <div class="my-2"><a class="btn btn-primary shadow ms-2" role="button" href="log.html">Create</a></div>
+            </form>
+        </div>
+    </section>
+{% endblock content %}

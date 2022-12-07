@@ -1,0 +1,32 @@
+{% extends 'main.html' %}
+{% load static %}
+{% block title %}
+    <title>Projects - Brand</title>
+{% endblock title %}
+
+{% block content %}
+    <section class="py-5" style="background: rgb(300, 200, 50);">
+        <div class="container py-5">
+            <div class="row mb-5">
+                <div class="col-md-8 col-xl-6 col-xxl-6 text-center mx-auto">
+                    <h2 class="fw-bold">#Name of product</h2>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row" style="background: rgb(350, 250, 50);">
+                    <div class="col-xxl-8" style="width: 600px;"><img src="{% static 'img/box.png' %}" width="500px" height="500px"></div>
+                    <div class="col-md-8 col-xl-6 col-xxl-4 text-center mx-auto" style="width: 600px;padding-top: 100px;padding-bottom: 50px;">
+                        <h2 class="fw-bold" style="color: #222222;height: 300px;">#Product Description</h2>
+                        <div>
+                            <p class="text-start mb-4" style="color: rgb(350, 200, 0);--bs-warning: #ffc107;--bs-warning-rgb: 255,193,7;font-size: 30px;font-weight: bold;padding-left: 50px;"># Product Price</p>
+                        </div><button class="btn btn-primary shadow" type="button">Buy</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card shadow-sm" style="background: rgb(300, 300, 300);"></div>
+    </section>
+{% endblock content %}
+    
+    
+    
