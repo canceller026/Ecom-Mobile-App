@@ -163,7 +163,26 @@ CREATE TRIGGER total_up AFTER INSERT ON ADDED
 FOR EACH ROW
 BEGIN
 UPDATE Orders
-SET Orders.total = Orders.total+ Product.price
+SET Orders.total = Orders.total + Product.price*Added.quantity
+WHERE Added.order_id = Orders.id AND Added.product_id = Product.id;
+END
+//
+---UPDATE quantity of order on Delete of Added---
+CREATE TRIGGER quantity_up AFTER DELETE ON ADDED
+FOR EACH ROW
+BEGIN
+UPDATE Orders
+SET Orders.quantity = Orders.quantity - 1
+WHERE Added.order_id = Orders.id;
+END
+//
+
+---UPDATE total cost of order on Delete of Added---
+CREATE TRIGGER total_up AFTER DELETE ON ADDED
+FOR EACH ROW
+BEGIN
+UPDATE Orders
+SET Orders.total = Orders.total - Product.price*Added.quantity
 WHERE Added.order_id = Orders.id AND Added.product_id = Product.id;
 END
 //    
