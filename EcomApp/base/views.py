@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.urls import reverse_lazy, reverse
+from .models import *
 from .forms import *
 
 User = get_user_model()
@@ -9,7 +10,11 @@ User = get_user_model()
 
 @login_required(login_url=reverse_lazy('login'))
 def HomeView(request):
-    return render(request, 'home.html')
+    list = Product.objects.all()
+    context = {
+        'list':list
+    }
+    return render(request, 'home.html', context)
 
 
 def LoginView(request):
