@@ -9,15 +9,6 @@ CREATE TABLE User_Profile(
     FOREIGN KEY (user_id) REFERENCES auth_user(id) ON DELETE CASCADE
 );
 
-CREATE TABLE Authen(
-    id INT AUTO_INCREMENT,
-    username VARCHAR(255) NOT NULL UNIQUE,
-    h_password BINARY(32),
-    user_id INT,
-    PRIMARY KEY (id),
-    FOREIGN KEY (user_id) REFERENCES User_Profile(id) ON DELETE CASCADE
-);
-
 CREATE TABLE Category(
     id INT AUTO_INCREMENT,
     cat_name VARCHAR(255) NOT NULL UNIQUE,
@@ -78,6 +69,7 @@ CREATE TABLE Orders(
 CREATE TABLE Added(
     order_id INT,       
     product_id INT, 
+    quantity INT,
     PRIMARY KEY (order_id, product_id),
     FOREIGN KEY (order_id) REFERENCES Orders(id) ON DELETE CASCADE,
     FOREIGN KEY (order_id) REFERENCES Product(id) ON DELETE CASCADE
@@ -90,7 +82,7 @@ CREATE PROCEDURE listAllProductOfCategory ( C char(10) )
 BEGIN
     SELECT P.id, P.pro_name, p.price
     FROM Product as P, Category as Ca
-    WHERE (P.cat_id = Ca.id & Ca.cat_name = C);
+    WHERE (P.cat_id = Ca.id AND Ca.cat_name = C);
 END
 //
 
@@ -99,7 +91,7 @@ CREATE PROCEDURE listAllOrder ( U char(10) )
 BEGIN
     SELECT O.id
     FROM Orders as O, User_Profile
-    WHERE (O.owner_id = User_Profile.id & User_Profile.name = U);
+    WHERE (O.owner_id = User_Profile.id AND User_Profile.name = U);
 END
 //
 
@@ -108,17 +100,17 @@ CREATE PROCEDURE listAllProductOfShop ( S char(10) )
 BEGIN
     SELECT Product.id, Product.pro_name, Product.price
     FROM Shop, Product
-    WHERE (Product.shop_id = Shop.id & Shop.shop_name = S);
+    WHERE (Product.shop_id = Shop.id AND Shop.shop_name = S);
 END
 //
 
 ---List the products shop S is selling whose price is between A and B---
-    CREATE PROCEDURE listAllProductInRange ( S char(10), A INT, B INT )
-    BEGIN
-        SELECT Product.id, Product.pro_name, Product.price
-        FROM Shop, Product
-        WHERE (Product.shop_id = Shop.id & Shop.shop_name = S & Product.Price > A & Product.Price < B); 
-    END
+CREATE PROCEDURE listAllProductInRange ( S char(10), A INT, B INT )
+BEGIN
+    SELECT Product.id, Product.pro_name, Product.price
+    FROM Shop, Product
+    WHERE (Product.shop_id = Shop.id AND Shop.shop_name = S AND Product.Price > A AND Product.Price < B); 
+END
     //
 
 ---Show all listing of user U:---
@@ -126,7 +118,7 @@ CREATE PROCEDURE listAllListing ( U char(50) )
 BEGIN
     SELECT DISTINCT Listing.id, Listing.list_type, Listing.list_description
     FROM Listing, User_Profile
-    WHERE (Listing.poster_id = User_Profile.id & User_Profile.name = U); 
+    WHERE (Listing.poster_id = User_Profile.id AND User_Profile.name = U); 
 END
 //
 
@@ -135,7 +127,7 @@ CREATE PROCEDURE listAllProductOfCategoryWithRating ( Ca char(50), R FLOAT )
 BEGIN
     SELECT DISTINCT Listing.id, Listing.list_type, Listing.list_description
     FROM Category, Shop, Product
-    WHERE (Shop.Rating > R & Shop.id = Product.shop_id & Category.cat_name = Ca & Category.id = Product.cat_id);
+    WHERE (Shop.Rating > R AND Shop.id = Product.shop_id AND Category.cat_name = Ca AND Category.id = Product.cat_id);
 END
 //
 
@@ -144,7 +136,7 @@ CREATE PROCEDURE listAllShopCourierStop( Co char(50))
 BEGIN
     SELECT DISTINCT Shop.id, Shop.shop_name
     FROM Shop, Product, Added, Orders
-    WHERE (Added.product_id = Product.id & Product.shop_id = Shop.id & Added.order_id  = Orders.id & Orders.courier_id = Co);
+    WHERE (Added.product_id = Product.id AND Product.shop_id = Shop.id AND Added.order_id  = Orders.id AND Orders.courier_id = Co);
 END
 //
 
@@ -153,7 +145,7 @@ CREATE PROCEDURE listAllOrdersOfShop( S char(50))
 BEGIN
     SELECT DISTINCT Orders.id, Orders.order_status
     FROM Shop, Product, Added, Orders
-    WHERE (Shop.shop_name = S & Added.product_id = Product.id & Product.shop_id = Shop.id & Added.order_id  = Orders.id);
+    WHERE (Shop.shop_name = S AND Added.product_id = Product.id AND Product.shop_id = Shop.id AND Added.order_id  = Orders.id);
 END
 // 
 ---UPDATE quantity of order on Insert of Added---
@@ -172,11 +164,18 @@ FOR EACH ROW
 BEGIN
 UPDATE Orders
 SET Orders.total = Orders.total+ Product.price
-WHERE Added.order_id = Orders.id & Added.product_id = Product.id;
+WHERE Added.order_id = Orders.id AND Added.product_id = Product.id;
 END
 //    
 DELIMITER;
 */
+INSERT INTO auth_user (id, password, is_superuser, username, first_name, last_name, email, is_staff, is_active, date_joined) VALUES(1,"123", FALSE, "minhdat01","Phan","Dat","dat.phanpan7@hcmut.edu.vn", 1,1,'2022-12-8');
+INSERT INTO auth_user (id, password, is_superuser, username, first_name, last_name, email, is_staff, is_active, date_joined) VALUES(2,"123", FALSE, "minhdat012","Phan","Dat","dat.phanpan7@hcmut.edu.vn", 1,1,'2022-12-8');
+INSERT INTO auth_user (id, password, is_superuser, username, first_name, last_name, email, is_staff, is_active, date_joined) VALUES(3,"123", FALSE, "minhdat0123","Phan","Dat","dat.phanpan7@hcmut.edu.vn", 1,1,'2022-12-8');
+INSERT INTO auth_user (id, password, is_superuser, username, first_name, last_name, email, is_staff, is_active, date_joined) VALUES(4,"123", FALSE, "minhdat01234","Phan","Dat","dat.phanpan7@hcmut.edu.vn", 1,1,'2022-12-8');
+INSERT INTO auth_user (id, password, is_superuser, username, first_name, last_name, email, is_staff, is_active, date_joined) VALUES(5,"123", FALSE, "minhdat0134","Phan","Dat","dat.phanpan7@hcmut.edu.vn", 1,1,'2022-12-8');
+
+
 INSERT INTO User_Profile VALUES (1,'abc','xyz','b');
 INSERT INTO User_Profile VALUES (2,'Pham Van A','TPHCM','b');
 INSERT INTO User_Profile VALUES (3,'Tran Van B','TPHCM','b');
@@ -207,3 +206,6 @@ DROP PROCEDURE listAllProductInRange;
 DROP PROCEDURE listAllProductOfCategory;
 DROP PROCEDURE listAllOrder;
 DROP PROCEDURE listAllProductOfShop;
+
+CREATE DATABASE ECOM;
+DROP DATABASE IF EXISTS ECOM;
