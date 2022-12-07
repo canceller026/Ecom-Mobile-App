@@ -1,6 +1,7 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from base.models import UserProfile, Added, AuthUser, Category, Courier, Listing, Orders,Product, Shop
+from django.db import connection
 from .serializer import *
 from rest_framework.viewsets import ModelViewSet
 
@@ -32,7 +33,77 @@ class ProductViewSet(ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
-    
+@api_view(['GET'])
+def getAllListingByUser(request, username):
+    cursor = connection.cursor()
+    cursor.callproc("listAllListing", [username])
+    ret = cursor.fetchall()
+    cursor.close()
+    return Response(ret)
+
+@api_view(['GET'])
+def getAllListingByUser(request, username):
+    cursor = connection.cursor()
+    cursor.callproc("listAllListing", [username])
+    ret = cursor.fetchall()
+    cursor.close()
+    return Response(ret)
+
+@api_view(['GET'])
+def getAllListingByUser(request, username):
+    cursor = connection.cursor()
+    cursor.callproc("listAllListing", [username])
+    ret = cursor.fetchall()
+    cursor.close()
+    return Response(ret)
+
+@api_view(['GET'])
+def getAllListingByUser(request, username):
+    cursor = connection.cursor()
+    cursor.callproc("listAllListing", [username])
+    ret = cursor.fetchall()
+    cursor.close()
+    return Response(ret)
+
+@api_view(['GET'])
+def getAllListingByUser(request, username):
+    cursor = connection.cursor()
+    cursor.callproc("listAllListing", [username])
+    ret = cursor.fetchall()
+    cursor.close()
+    return Response(ret)
+
+@api_view(['GET'])
+def getAllListingByUser(request, username):
+    cursor = connection.cursor()
+    cursor.callproc("listAllListing", [username])
+    ret = cursor.fetchall()
+    cursor.close()
+    return Response(ret)
+
+@api_view(['GET'])
+def getAllListingByUser(request, username):
+    cursor = connection.cursor()
+    cursor.callproc("listAllListing", [username])
+    ret = cursor.fetchall()
+    cursor.close()
+    return Response(ret)
+
+@api_view(['GET'])
+def getAllListingByUser(request, username):
+    cursor = connection.cursor()
+    cursor.callproc("listAllListing", [username])
+    ret = cursor.fetchall()
+    cursor.close()
+    return Response(ret)
+
+@api_view(['GET'])
+def getAllListingByUser(request, username):
+    cursor = connection.cursor()
+    cursor.callproc("listAllListing", [username])
+    ret = cursor.fetchall()
+    cursor.close()
+    return Response(ret)
 """
 @api_view(['GET'])
 def getProfile(request):

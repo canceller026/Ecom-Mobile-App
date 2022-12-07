@@ -12,9 +12,9 @@ router.register(r'shop', views.ShopViewSet)
 router.register(r'courier', views.CourierViewSet)
 
 urlpatterns = [
-
+    path('procedure/get-all-listing/<str:username>/', views.getAllListingByUser),
     path('', include(router.urls)),
-
+    
 ]
 """
 path('profile', views.getProfile),
