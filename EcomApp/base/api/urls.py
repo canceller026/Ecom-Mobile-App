@@ -17,8 +17,9 @@ router.register(r'profile', views.UserProfileViewSet)
 urlpatterns = [
     path('token/', views.UserTokenObtainPairView.as_view(), name='token_obtain'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('procedure/get-all-listing/<str:username>/', views.getAllListingByUser),
     path('', include(router.urls)),
-
+    
 ]
 """
 path('profile', views.getProfile),

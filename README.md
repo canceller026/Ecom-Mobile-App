@@ -2,17 +2,18 @@
 ## Backend system config
 
 ### Install prequisites
-* **To run this Project, Python3, pip and MySQL is required.**
+* Before running the application, please make sure that **Python3, pip and MySQL** is install on your local machine.
 
 * To install Python Pip packages to run the backend server, you can use any virtual enviroment manager as you prefer.
 
 ```
-# example of virtualenv
-virtualenv env
+# As for our example, we use virtualenv:
 
-source env/bin/activate
+$ virtualenv env
 
-pip install -r requirements.txt
+$ source env/bin/activate
+
+$ pip install -r requirements.txt
 ```
 
 ### Database config
@@ -37,7 +38,7 @@ DATABASES = {
 
 ...
 ```
-* After change the server database settings, we can now make migration to the database by running:
+* After changing the server database settings, we can now make migration to the database by running:
 ```
 # Migrate the Django services' data to the database
 
