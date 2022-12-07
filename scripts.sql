@@ -86,16 +86,15 @@ BEGIN
 END
 //
 
----List all the orders where user U is the buyer---
 CREATE PROCEDURE listAllOrder ( U char(10) )
 BEGIN
-    SELECT O.id
-    FROM Orders as O, User_Profile
-    WHERE (O.owner_id = User_Profile.id AND User_Profile.name = U);
+    SELECT O.id, O.total, O.quantity, O.payment_id, O.payment_type, O.ETA, O.order_status
+    FROM Orders as O, auth_user
+    WHERE (O.owner_id = auth_user.id AND auth_user.username = U);
 END
 //
 
----List all the products shop S is selling---
+
 CREATE PROCEDURE listAllProductOfShop ( S char(10) )
 BEGIN
     SELECT Product.id, Product.pro_name, Product.price
@@ -104,16 +103,14 @@ BEGIN
 END
 //
 
----List the products shop S is selling whose price is between A and B---
 CREATE PROCEDURE listAllProductInRange ( S char(10), A INT, B INT )
 BEGIN
     SELECT Product.id, Product.pro_name, Product.price
     FROM Shop, Product
     WHERE (Product.shop_id = Shop.id AND Shop.shop_name = S AND Product.Price > A AND Product.Price < B); 
 END
-    //
+//
 
----Show all listing of user U:---
 CREATE PROCEDURE listAllListing ( U char(50) )
 BEGIN
     SELECT DISTINCT Listing.id, Listing.list_type, Listing.list_description
@@ -122,7 +119,7 @@ BEGIN
 END
 //
 
----List all products of category Ca that comes from a shop whose rating is R at least:---
+
 CREATE PROCEDURE listAllProductOfCategoryWithRating ( Ca char(50), R FLOAT )
 BEGIN
     SELECT DISTINCT Listing.id, Listing.list_type, Listing.list_description
@@ -131,8 +128,8 @@ BEGIN
 END
 //
 
----List all the shop have order shipped by courrier Co---
-CREATE PROCEDURE listAllShopCourierStop( Co char(50))
+
+CREATE PROCEDURE listAllShopCourierStop( Co INT)
 BEGIN
     SELECT DISTINCT Shop.id, Shop.shop_name
     FROM Shop, Product, Added, Orders
@@ -140,54 +137,56 @@ BEGIN
 END
 //
 
----List all the orders where shop S is the seller---
+
 CREATE PROCEDURE listAllOrdersOfShop( S char(50))
 BEGIN
-    SELECT DISTINCT Orders.id, Orders.order_status
+    SELECT DISTINCT Orders.id, Orders.order_status, Orders.total_cost, Orders.quantity, Orders.owner_id, Orders.courier_id
     FROM Shop, Product, Added, Orders
     WHERE (Shop.shop_name = S AND Added.product_id = Product.id AND Product.shop_id = Shop.id AND Added.order_id  = Orders.id);
 END
 // 
----UPDATE quantity of order on Insert of Added---
+
 CREATE TRIGGER quantity_up AFTER INSERT ON ADDED
 FOR EACH ROW
 BEGIN
 UPDATE Orders
 SET Orders.quantity = Orders.quantity + 1
-WHERE Added.order_id = Orders.id;
+WHERE NEW.order_id = Orders.id;
 END
 //
 
----UPDATE total cost of order on Insert of Added---
+
 CREATE TRIGGER total_up AFTER INSERT ON ADDED
 FOR EACH ROW
 BEGIN
 UPDATE Orders
-SET Orders.total = Orders.total + Product.price*Added.quantity
-WHERE Added.order_id = Orders.id AND Added.product_id = Product.id;
-END
-//
----UPDATE quantity of order on Delete of Added---
-CREATE TRIGGER quantity_up AFTER DELETE ON ADDED
-FOR EACH ROW
-BEGIN
-UPDATE Orders
-SET Orders.quantity = Orders.quantity - 1
-WHERE Added.order_id = Orders.id;
+SET Orders.total = Orders.total + (SELECT Product.Price FROM Product WHERE NEW.product_id = Product.id) *NEW.quantity
+WHERE NEW.order_id = Orders.id;
 END
 //
 
----UPDATE total cost of order on Delete of Added---
-CREATE TRIGGER total_up AFTER DELETE ON ADDED
+CREATE TRIGGER quantity_down AFTER DELETE ON ADDED
 FOR EACH ROW
 BEGIN
 UPDATE Orders
-SET Orders.total = Orders.total - Product.price*Added.quantity
-WHERE Added.order_id = Orders.id AND Added.product_id = Product.id;
+SET Orders.quantity = Orders.quantity + 1
+WHERE OLD.order_id = Orders.id;
 END
-//    
+//
+
+
+CREATE TRIGGER total_down AFTER DELETE ON ADDED
+FOR EACH ROW
+BEGIN
+UPDATE Orders
+SET Orders.total = Orders.total - (SELECT Product.Price FROM Product WHERE OLD.product_id = Product.id) *OLD.quantity
+WHERE OLD.order_id = Orders.id;
+END
+//
+
 DELIMITER;
 */
+/*
 INSERT INTO auth_user (id, password, is_superuser, username, first_name, last_name, email, is_staff, is_active, date_joined) VALUES(1,"123", FALSE, "minhdat01","Phan","Dat","dat.phanpan7@hcmut.edu.vn", 1,1,'2022-12-8');
 INSERT INTO auth_user (id, password, is_superuser, username, first_name, last_name, email, is_staff, is_active, date_joined) VALUES(2,"123", FALSE, "minhdat012","Phan","Dat","dat.phanpan7@hcmut.edu.vn", 1,1,'2022-12-8');
 INSERT INTO auth_user (id, password, is_superuser, username, first_name, last_name, email, is_staff, is_active, date_joined) VALUES(3,"123", FALSE, "minhdat0123","Phan","Dat","dat.phanpan7@hcmut.edu.vn", 1,1,'2022-12-8');
@@ -218,13 +217,69 @@ INSERT INTO CATEGORY VALUES (2,'My Pham','');
 INSERT INTO CATEGORY VALUES (3,'Quan APo','');
 INSERT INTO CATEGORY VALUES (4,'Do Gia Dung','');
 INSERT INTO CATEGORY VALUES (5,'Thuc pham','');
-
-SELECT * FROM USER;
-DROP PROCEDURE listAllListing;
-DROP PROCEDURE listAllProductInRange;
-DROP PROCEDURE listAllProductOfCategory;
-DROP PROCEDURE listAllOrder;
-DROP PROCEDURE listAllProductOfShop;
+*/
 
 CREATE DATABASE ECOM;
 DROP DATABASE IF EXISTS ECOM;
+
+SELECT * FROM courier;
+SELECT * FROM orders;
+
+---INSERT DATA---
+LOAD DATA LOCAL INFILE 'C:/Users/Admin/Downloads/sample-data/authen.csv' 
+INTO TABLE auth_user
+FIELDS TERMINATED BY ',' 
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n';
+
+LOAD DATA LOCAL INFILE 'C:/Users/Admin/Downloads/sample-data/user.csv' 
+INTO TABLE user_profile
+FIELDS TERMINATED BY ',' 
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n';
+
+LOAD DATA LOCAL INFILE 'C:/Users/Admin/Downloads/sample-data/courier.csv' 
+INTO TABLE courier
+FIELDS TERMINATED BY ',' 
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n';
+
+LOAD DATA LOCAL INFILE 'C:/Users/Admin/Downloads/sample-data/category.csv' 
+INTO TABLE category
+FIELDS TERMINATED BY ',' 
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n';
+
+
+LOAD DATA LOCAL INFILE 'C:/Users/Admin/Downloads/sample-data/listing.csv' 
+INTO TABLE listing
+FIELDS TERMINATED BY ',' 
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n';
+
+LOAD DATA LOCAL INFILE 'C:/Users/Admin/Downloads/sample-data/shop.csv' 
+INTO TABLE shop
+FIELDS TERMINATED BY ',' 
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n';
+
+LOAD DATA LOCAL INFILE 'C:/Users/Admin/Downloads/sample-data/product.csv' 
+INTO TABLE product
+FIELDS TERMINATED BY ',' 
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n';
+
+LOAD DATA LOCAL INFILE 'C:/Users/Admin/Downloads/sample-data/order.csv' 
+INTO TABLE orders
+FIELDS TERMINATED BY ',' 
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n';
+
+
+INSERT INTO ADDED VALUES (1,7,1);
+INSERT INTO ADDED VALUES (1,8,2);
+INSERT INTO ADDED VALUES (2,4,3);
+INSERT INTO ADDED VALUES (3,2,4);
+INSERT INTO ADDED VALUES (3,1,9);
+INSERT INTO ADDED VALUES (4,10,7);
+INSERT INTO ADDED VALUES (5,10,8);
