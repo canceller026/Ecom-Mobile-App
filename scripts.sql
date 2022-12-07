@@ -1,4 +1,6 @@
 -- @block
+
+---TABLE CREATION---
 CREATE TABLE User_Profile(
     id INT AUTO_INCREMENT,
     name VARCHAR(255) NOT NULL UNIQUE,
@@ -15,6 +17,7 @@ CREATE TABLE Category(
     cat_description TEXT,
     PRIMARY KEY (id)
 );
+
 CREATE TABLE Listing(
     id INT AUTO_INCREMENT,
     list_type VARCHAR(255),
@@ -23,11 +26,13 @@ CREATE TABLE Listing(
     PRIMARY KEY (id),
     FOREIGN KEY (poster_id) REFERENCES User_Profile(id) ON DELETE CASCADE
 );
+
 CREATE TABLE Courier(
     id INT AUTO_INCREMENT,
     cour_name VARCHAR(255),
     PRIMARY KEY (id)
 );
+
 CREATE TABLE Shop(
     id INT AUTO_INCREMENT,
     shop_name VARCHAR(255) NOT NULL,
@@ -37,6 +42,7 @@ CREATE TABLE Shop(
     PRIMARY KEY (id), 
     FOREIGN KEY (owner_id) REFERENCES User_Profile(id) ON DELETE CASCADE
 );
+
 CREATE TABLE Product(
     id INT AUTO_INCREMENT,
     pro_name VARCHAR(255) NOT NULL UNIQUE,
@@ -65,7 +71,8 @@ CREATE TABLE Orders(
     PRIMARY KEY (id),
     FOREIGN KEY (owner_id) REFERENCES User_Profile(id) ON DELETE CASCADE,
     FOREIGN KEY (courier_id) REFERENCES Courier(id) ON DELETE CASCADE
-); 
+);
+
 CREATE TABLE Added(
     order_id INT,       
     product_id INT, 
@@ -75,8 +82,13 @@ CREATE TABLE Added(
     FOREIGN KEY (order_id) REFERENCES Product(id) ON DELETE CASCADE
 );
 
+---DATABASE OPERATIONS---
+UPDATE User_Profile SET User_Profile.Address = "Go Vap District" WHERE User_Profile.id = 9;
+SELECT * FROM User_Profile;
 
-/*
+DELETE FROM Listing WHERE Listing.poster_id = 9;
+SELECT * FROM Listing;
+---PROCEDURE---
 DELIMITER //
 CREATE PROCEDURE listAllProductOfCategory ( C char(10) )
 BEGIN
@@ -122,7 +134,7 @@ END
 
 CREATE PROCEDURE listAllProductOfCategoryWithRating ( Ca char(50), R FLOAT )
 BEGIN
-    SELECT DISTINCT Listing.id, Listing.list_type, Listing.list_description
+    SELECT DISTINCT Product.id, Product.pro_name, Product.price
     FROM Category, Shop, Product
     WHERE (Shop.Rating > R AND Shop.id = Product.shop_id AND Category.cat_name = Ca AND Category.id = Product.cat_id);
 END
@@ -146,6 +158,17 @@ BEGIN
 END
 // 
 
+---PROCEDURE TESTING---
+CALL listAllProductOfCategory('Computer');
+CALL listAllOrder('user2');
+CALL listAllOrderOfShop('Ikea');
+CALL listAllProductInRange('Ikea',100,149);
+CALL listAllProductInRange('Ikea',98,151);
+CALL listAllListing("Bui Gia Huy");
+CALL listAllShopCourierStop(2);
+CALL listAllProductOfCategoryWithRating("Computer",3.5);
+CALL listAllProductOfCategoryWithRating("Clothing",4.5);
+---CREATE TRIGGER---
 CREATE TRIGGER quantity_up AFTER INSERT ON ADDED
 FOR EACH ROW
 BEGIN
@@ -169,7 +192,7 @@ CREATE TRIGGER quantity_down AFTER DELETE ON ADDED
 FOR EACH ROW
 BEGIN
 UPDATE Orders
-SET Orders.quantity = Orders.quantity + 1
+SET Orders.quantity = Orders.quantity - 1
 WHERE OLD.order_id = Orders.id;
 END
 //
@@ -186,94 +209,14 @@ END
 
 DELIMITER;
 */
-/*
-INSERT INTO auth_user (id, password, is_superuser, username, first_name, last_name, email, is_staff, is_active, date_joined) VALUES(1,"123", FALSE, "minhdat01","Phan","Dat","dat.phanpan7@hcmut.edu.vn", 1,1,'2022-12-8');
-INSERT INTO auth_user (id, password, is_superuser, username, first_name, last_name, email, is_staff, is_active, date_joined) VALUES(2,"123", FALSE, "minhdat012","Phan","Dat","dat.phanpan7@hcmut.edu.vn", 1,1,'2022-12-8');
-INSERT INTO auth_user (id, password, is_superuser, username, first_name, last_name, email, is_staff, is_active, date_joined) VALUES(3,"123", FALSE, "minhdat0123","Phan","Dat","dat.phanpan7@hcmut.edu.vn", 1,1,'2022-12-8');
-INSERT INTO auth_user (id, password, is_superuser, username, first_name, last_name, email, is_staff, is_active, date_joined) VALUES(4,"123", FALSE, "minhdat01234","Phan","Dat","dat.phanpan7@hcmut.edu.vn", 1,1,'2022-12-8');
-INSERT INTO auth_user (id, password, is_superuser, username, first_name, last_name, email, is_staff, is_active, date_joined) VALUES(5,"123", FALSE, "minhdat0134","Phan","Dat","dat.phanpan7@hcmut.edu.vn", 1,1,'2022-12-8');
+---TRIGGER TESTING---
+INSERT INTO ADDED VALUES (2,3,4)
+SELECT * FROM ORDERS WHERE ORDERS.id = 2;
 
-
-INSERT INTO User_Profile VALUES (1,'abc','xyz','b');
-INSERT INTO User_Profile VALUES (2,'Pham Van A','TPHCM','b');
-INSERT INTO User_Profile VALUES (3,'Tran Van B','TPHCM','b');
-INSERT INTO User_Profile VALUES (4,'Phan Thi C','Hai Phong','v');
-INSERT INTO User_Profile VALUES (5,'Nguyen Quoc Chan','Ha Noi','s');
-
-INSERT INTO SHOP VALUES (1,'Trang Nemo','Ban my pham',4.6, 4);
-INSERT INTO SHOP VALUES (2,'Louis Vuitton','Ban Quan Ao',3.0,4);
-INSERT INTO SHOP VALUES (3,'Sony','Ban thiet bi dien tu',4.9,4);
-INSERT INTO SHOP VALUES (4,'Phong Vu','Ban Linh kien may tinh',2.4,4);
-INSERT INTO SHOP VALUES (5,'Circle K','Cua hang tien loi',5.0,4);
-
-INSERT INTO LISTING VALUES (1,'Sell','Sell A',5);
-INSERT INTO LISTING VALUES (2,'Sell','Sell B',5);
-INSERT INTO LISTING VALUES (3,'Trade','Trade E for F',5);
-INSERT INTO LISTING VALUES (4,'Buy','Want to Buy X',5);
-INSERT INTO LISTING VALUES (5,'Sell','Sell Z',5);
-
-INSERT INTO CATEGORY VALUES (1,'Linh Kien Dien Tu','');
-INSERT INTO CATEGORY VALUES (2,'My Pham','');
-INSERT INTO CATEGORY VALUES (3,'Quan APo','');
-INSERT INTO CATEGORY VALUES (4,'Do Gia Dung','');
-INSERT INTO CATEGORY VALUES (5,'Thuc pham','');
-*/
-
-CREATE DATABASE ECOM;
-DROP DATABASE IF EXISTS ECOM;
-
-SELECT * FROM courier;
-SELECT * FROM orders;
+DELETE FROM ADDED WHERE ADDED.product_id = 3;
+SELECT * FROM ORDERS WHERE ORDERS.id = 2;
 
 ---INSERT DATA---
-LOAD DATA LOCAL INFILE 'C:/Users/Admin/Downloads/sample-data/authen.csv' 
-INTO TABLE auth_user
-FIELDS TERMINATED BY ',' 
-ENCLOSED BY '"'
-LINES TERMINATED BY '\n';
-
-LOAD DATA LOCAL INFILE 'C:/Users/Admin/Downloads/sample-data/user.csv' 
-INTO TABLE user_profile
-FIELDS TERMINATED BY ',' 
-ENCLOSED BY '"'
-LINES TERMINATED BY '\n';
-
-LOAD DATA LOCAL INFILE 'C:/Users/Admin/Downloads/sample-data/courier.csv' 
-INTO TABLE courier
-FIELDS TERMINATED BY ',' 
-ENCLOSED BY '"'
-LINES TERMINATED BY '\n';
-
-LOAD DATA LOCAL INFILE 'C:/Users/Admin/Downloads/sample-data/category.csv' 
-INTO TABLE category
-FIELDS TERMINATED BY ',' 
-ENCLOSED BY '"'
-LINES TERMINATED BY '\n';
-
-
-LOAD DATA LOCAL INFILE 'C:/Users/Admin/Downloads/sample-data/listing.csv' 
-INTO TABLE listing
-FIELDS TERMINATED BY ',' 
-ENCLOSED BY '"'
-LINES TERMINATED BY '\n';
-
-LOAD DATA LOCAL INFILE 'C:/Users/Admin/Downloads/sample-data/shop.csv' 
-INTO TABLE shop
-FIELDS TERMINATED BY ',' 
-ENCLOSED BY '"'
-LINES TERMINATED BY '\n';
-
-LOAD DATA LOCAL INFILE 'C:/Users/Admin/Downloads/sample-data/product.csv' 
-INTO TABLE product
-FIELDS TERMINATED BY ',' 
-ENCLOSED BY '"'
-LINES TERMINATED BY '\n';
-
-LOAD DATA LOCAL INFILE 'C:/Users/Admin/Downloads/sample-data/order.csv' 
-INTO TABLE orders
-FIELDS TERMINATED BY ',' 
-ENCLOSED BY '"'
-LINES TERMINATED BY '\n';
 
 
 INSERT INTO ADDED VALUES (1,7,1);
@@ -283,3 +226,11 @@ INSERT INTO ADDED VALUES (3,2,4);
 INSERT INTO ADDED VALUES (3,1,9);
 INSERT INTO ADDED VALUES (4,10,7);
 INSERT INTO ADDED VALUES (5,10,8);
+
+
+---DEBUG---
+CREATE DATABASE ECOM;
+DROP DATABASE IF EXISTS ECOM;
+
+SELECT * FROM courier;
+SELECT * FROM orders;
