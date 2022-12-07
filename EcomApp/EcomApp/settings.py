@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'base'
+    'base',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -79,9 +80,9 @@ WSGI_APPLICATION = 'EcomApp.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'DBLab',
+        'NAME': 'ecom',
         'USER': 'root',
-        'PASSWORD': '',
+        'PASSWORD': 'c@ncEll3r',
         'HOST': 'localhost',
         'PORT': '3306',
     }

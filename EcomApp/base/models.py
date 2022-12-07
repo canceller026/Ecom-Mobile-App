@@ -14,96 +14,8 @@ class Added(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'Added'
+        db_table = 'added'
         unique_together = (('order', 'product_id'),)
-
-
-class Authen(models.Model):
-    username = models.CharField(unique=True, max_length=255)
-    h_password = models.CharField(max_length=32, blank=True, null=True)
-    user = models.ForeignKey('UserProfile', models.DO_NOTHING, blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'Authen'
-
-
-class Category(models.Model):
-    cat_name = models.CharField(unique=True, max_length=255)
-    cat_description = models.TextField(blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'Category'
-
-
-class Courier(models.Model):
-    cour_name = models.CharField(max_length=255, blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'Courier'
-
-
-class Listing(models.Model):
-    list_type = models.CharField(max_length=255, blank=True, null=True)
-    list_description = models.TextField(blank=True, null=True)
-    poster = models.ForeignKey('UserProfile', models.DO_NOTHING, blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'Listing'
-
-
-class Orders(models.Model):
-    created_date = models.DateField(blank=True, null=True)
-    order_status = models.IntegerField(blank=True, null=True)
-    total = models.FloatField(blank=True, null=True)
-    payment_id = models.IntegerField(blank=True, null=True)
-    payment_type = models.CharField(max_length=255, blank=True, null=True)
-    eta = models.DateField(db_column='ETA', blank=True, null=True)  # Field name made lowercase.
-    owner = models.ForeignKey('UserProfile', models.DO_NOTHING)
-    courier = models.ForeignKey(Courier, models.DO_NOTHING)
-
-    class Meta:
-        managed = False
-        db_table = 'Orders'
-
-
-class Product(models.Model):
-    pro_name = models.CharField(unique=True, max_length=255)
-    pro_type = models.CharField(max_length=255, blank=True, null=True)
-    pro_description = models.TextField(blank=True, null=True)
-    pro_status = models.IntegerField(blank=True, null=True)
-    price = models.FloatField(blank=True, null=True)
-    shop = models.ForeignKey('Shop', models.DO_NOTHING, blank=True, null=True)
-    cat = models.ForeignKey(Category, models.DO_NOTHING, blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'Product'
-
-
-class Shop(models.Model):
-    shop_name = models.CharField(max_length=255)
-    shop_description = models.TextField(blank=True, null=True)
-    rating = models.FloatField(blank=True, null=True)
-    owner = models.ForeignKey('UserProfile', models.DO_NOTHING, blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'Shop'
-
-
-class UserProfile(models.Model):
-    name = models.CharField(unique=True, max_length=255)
-    address = models.TextField(blank=True, null=True)
-    role = models.CharField(max_length=1)
-    user = models.ForeignKey('AuthUser', models.DO_NOTHING, blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'User_Profile'
 
 
 class AuthGroup(models.Model):
@@ -175,6 +87,33 @@ class AuthUserUserPermissions(models.Model):
         unique_together = (('user', 'permission'),)
 
 
+class Authen(models.Model):
+    username = models.CharField(unique=True, max_length=255)
+    h_password = models.CharField(max_length=32, blank=True, null=True)
+    user = models.ForeignKey('UserProfile', models.DO_NOTHING, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'authen'
+
+
+class Category(models.Model):
+    cat_name = models.CharField(unique=True, max_length=255)
+    cat_description = models.TextField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'category'
+
+
+class Courier(models.Model):
+    cour_name = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'courier'
+
+
 class DjangoAdminLog(models.Model):
     action_time = models.DateTimeField()
     object_id = models.TextField(blank=True, null=True)
@@ -218,3 +157,64 @@ class DjangoSession(models.Model):
     class Meta:
         managed = False
         db_table = 'django_session'
+
+
+class Listing(models.Model):
+    list_type = models.CharField(max_length=255, blank=True, null=True)
+    list_description = models.TextField(blank=True, null=True)
+    poster = models.ForeignKey('UserProfile', models.DO_NOTHING, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'listing'
+
+
+class Orders(models.Model):
+    created_date = models.DateField(blank=True, null=True)
+    order_status = models.IntegerField(blank=True, null=True)
+    total = models.FloatField(blank=True, null=True)
+    payment_id = models.IntegerField(blank=True, null=True)
+    payment_type = models.CharField(max_length=255, blank=True, null=True)
+    eta = models.DateField(db_column='ETA', blank=True, null=True)  # Field name made lowercase.
+    owner = models.ForeignKey('UserProfile', models.DO_NOTHING)
+    courier = models.ForeignKey(Courier, models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'orders'
+
+
+class Product(models.Model):
+    pro_name = models.CharField(unique=True, max_length=255)
+    pro_type = models.CharField(max_length=255, blank=True, null=True)
+    pro_description = models.TextField(blank=True, null=True)
+    pro_status = models.IntegerField(blank=True, null=True)
+    price = models.FloatField(blank=True, null=True)
+    shop = models.ForeignKey('Shop', models.DO_NOTHING, blank=True, null=True)
+    cat = models.ForeignKey(Category, models.DO_NOTHING, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'product'
+
+
+class Shop(models.Model):
+    shop_name = models.CharField(max_length=255)
+    shop_description = models.TextField(blank=True, null=True)
+    rating = models.FloatField(blank=True, null=True)
+    owner = models.ForeignKey('UserProfile', models.DO_NOTHING, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'shop'
+
+
+class UserProfile(models.Model):
+    name = models.CharField(unique=True, max_length=255)
+    address = models.TextField(blank=True, null=True)
+    role = models.CharField(max_length=1)
+    user = models.ForeignKey(AuthUser, models.DO_NOTHING, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'user_profile'
