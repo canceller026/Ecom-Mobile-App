@@ -13,7 +13,7 @@ CREATE TABLE Authen(
     h_password BINARY(32),
     user_id INT,
     PRIMARY KEY (id),
-    FOREIGN KEY (user_id) REFERENCES User_Profile(id)
+    FOREIGN KEY (user_id) REFERENCES User_Profile(id) ON DELETE CASCADE
 );
 
 CREATE TABLE Category(
@@ -28,7 +28,7 @@ CREATE TABLE Listing(
     list_description TEXT,
     poster_id INT,
     PRIMARY KEY (id),
-    FOREIGN KEY (poster_id) REFERENCES User_Profile(id) 
+    FOREIGN KEY (poster_id) REFERENCES User_Profile(id) ON DELETE CASCADE
 );
 CREATE TABLE Courier(
     id INT AUTO_INCREMENT,
@@ -42,7 +42,7 @@ CREATE TABLE Shop(
     rating FLOAT DEFAULT 0.0,
     owner_id INT,
     PRIMARY KEY (id), 
-    FOREIGN KEY (owner_id) REFERENCES User_Profile(id)
+    FOREIGN KEY (owner_id) REFERENCES User_Profile(id) ON DELETE CASCADE
 );
 CREATE TABLE Product(
     id INT AUTO_INCREMENT,
@@ -54,8 +54,8 @@ CREATE TABLE Product(
     shop_id INT,
     cat_id INT,
     PRIMARY KEY (id),
-    FOREIGN KEY (shop_id) REFERENCES Shop(id),
-    FOREIGN KEY (cat_id) REFERENCES Category(id)
+    FOREIGN KEY (shop_id) REFERENCES Shop(id) ON DELETE CASCADE,
+    FOREIGN KEY (cat_id) REFERENCES Category(id) ON DELETE CASCADE
 );
 
 CREATE TABLE Orders(
@@ -69,15 +69,15 @@ CREATE TABLE Orders(
     owner_id INT NOT NULL,
     courier_id INT NOT NULL, 
     PRIMARY KEY (id),
-    FOREIGN KEY (owner_id) REFERENCES User_Profile(id),
-    FOREIGN KEY (courier_id) REFERENCES Courier(id)
+    FOREIGN KEY (owner_id) REFERENCES User_Profile(id) ON DELETE CASCADE,
+    FOREIGN KEY (courier_id) REFERENCES Courier(id) ON DELETE CASCADE
 ); 
 CREATE TABLE Added(
     order_id INT,       
     product_id INT, 
     PRIMARY KEY (order_id, product_id),
-    FOREIGN KEY (order_id) REFERENCES Orders(id),
-    FOREIGN KEY (order_id) REFERENCES Product(id)
+    FOREIGN KEY (order_id) REFERENCES Orders(id) ON DELETE CASCADE,
+    FOREIGN KEY (order_id) REFERENCES Product(id) ON DELETE CASCADE
 );
 
 
