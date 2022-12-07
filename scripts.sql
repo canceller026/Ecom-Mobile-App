@@ -64,9 +64,10 @@ CREATE TABLE Orders(
     id INT AUTO_INCREMENT,
     created_date DATE,
     order_status BOOLEAN,
-    total FLOAT,
+    total FLOAT DEFAULT 0.0,
     payment_id INT,
     payment_type VARCHAR(255),
+    quantity INT DEFAULT 0,
     ETA DATE,
     owner_id INT NOT NULL,
     courier_id INT NOT NULL, 
@@ -97,8 +98,8 @@ END
 CREATE PROCEDURE listAllOrder ( U char(10) )
 BEGIN
     SELECT O.id
-    FROM Orders as O, User
-    WHERE (O.owner_id = USER.id & USER.name = U);
+    FROM Orders as O, User_Profile
+    WHERE (O.owner_id = User_Profile.id & User_Profile.name = U);
 END
 //
 
@@ -124,14 +125,58 @@ END
 CREATE PROCEDURE listAllListing ( U char(50) )
 BEGIN
     SELECT DISTINCT Listing.id, Listing.list_type, Listing.list_description
-    FROM Listing, User
-    WHERE (Listing.poster_id = User.id & User.name = U); 
+    FROM Listing, User_Profile
+    WHERE (Listing.poster_id = User_Profile.id & User_Profile.name = U); 
 END
 //
 
+---List all products of category Ca that comes from a shop whose rating is R at least:---
+CREATE PROCEDURE listAllProductOfCategoryWithRating ( Ca char(50), R FLOAT )
+BEGIN
+    SELECT DISTINCT Listing.id, Listing.list_type, Listing.list_description
+    FROM Category, Shop, Product
+    WHERE (Shop.Rating > R & Shop.id = Product.shop_id & Category.cat_name = Ca & Category.id = Product.cat_id);
+END
+//
+
+---List all the shop have order shipped by courrier Co---
+CREATE PROCEDURE listAllShopCourierStop( Co char(50))
+BEGIN
+    SELECT DISTINCT Shop.id, Shop.shop_name
+    FROM Shop, Product, Added, Orders
+    WHERE (Added.product_id = Product.id & Product.shop_id = Shop.id & Added.order_id  = Orders.id & Orders.courier_id = Co);
+END
+//
+
+---List all the orders where shop S is the seller---
+CREATE PROCEDURE listAllOrdersOfShop( S char(50))
+BEGIN
+    SELECT DISTINCT Orders.id, Orders.order_status
+    FROM Shop, Product, Added, Orders
+    WHERE (Shop.shop_name = S & Added.product_id = Product.id & Product.shop_id = Shop.id & Added.order_id  = Orders.id);
+END
+// 
+---UPDATE quantity of order on Insert of Added---
+CREATE TRIGGER quantity_up AFTER INSERT ON ADDED
+FOR EACH ROW
+BEGIN
+UPDATE Orders
+SET Orders.quantity = Orders.quantity + 1
+WHERE Added.order_id = Orders.id;
+END
+//
+
+---UPDATE total cost of order on Insert of Added---
+CREATE TRIGGER total_up AFTER INSERT ON ADDED
+FOR EACH ROW
+BEGIN
+UPDATE Orders
+SET Orders.total = Orders.total+ Product.price
+WHERE Added.order_id = Orders.id & Added.product_id = Product.id;
+END
+//    
 DELIMITER;
 */
-
 INSERT INTO User_Profile VALUES (1,'abc','xyz','b');
 INSERT INTO User_Profile VALUES (2,'Pham Van A','TPHCM','b');
 INSERT INTO User_Profile VALUES (3,'Tran Van B','TPHCM','b');
