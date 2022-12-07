@@ -1,8 +1,9 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from base.models import UserProfile, Added, AuthUser, Category, Courier, Listing, Orders,Product, Shop
+from base.models import UserProfile, Added, Category, Courier, Listing, Orders,Product, Shop, AuthUser
 from .serializer import *
 from rest_framework.viewsets import ModelViewSet
+from rest_framework_simplejwt.views import TokenObtainPairView
 
 class ShopViewSet(ModelViewSet):
     queryset = Shop.objects.all()
@@ -32,7 +33,23 @@ class ProductViewSet(ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
-    
+class UserProfileViewSet(ModelViewSet): 
+    queryset = UserProfile.objects.all()
+    serializer_class = UserProfileSerializer
+
+class AuthUserViewSet(ModelViewSet):
+    queryset = AuthUser.objects.all()
+    serializer_class = AuthUserSerializer
+
+    def create(self, request, *args, **kwargs):
+        response = super().create(request, *args, **kwargs)
+        if response.status_code == 201:
+            UserProfile.objects.create(user=AuthUser.objects.get(id = response.data['id']), name=response.data['username'])
+
+        return response
+
+class UserTokenObtainPairView(TokenObtainPairView):
+    serializer_class = UserTokenObtainPairSerializer
 """
 @api_view(['GET'])
 def getProfile(request):

@@ -1,5 +1,10 @@
 from rest_framework.serializers import ModelSerializer
-from base.models import UserProfile, Added, AuthUser, Category, Courier, Listing, Orders,Product, Shop
+from base.models import UserProfile, Added, Category, Courier, Listing, Orders,Product, Shop
+from django.contrib.auth import get_user_model
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+
+User = get_user_model()
+
 
 class UserProfileSerializer(ModelSerializer):
     class Meta:
@@ -24,8 +29,23 @@ class OrdersSerializer(ModelSerializer):
 
 class AuthUserSerializer(ModelSerializer):
     class Meta:
-        model = AuthUser
-        fields = '__all__'
+        model = User
+        fields = ['id','username', 'email', 'password']
+        extra_kwargs = {
+            'password': {
+                'write_only': True,
+                'style': {
+                    'input_type': 'password',
+                },
+            },
+        }
+
+    def create(self, validated_data):
+        user = super().create(validated_data)
+        user.set_password(validated_data['password'])
+
+        user.save()
+        return user
 
 class CategorySerializer(ModelSerializer):
     class Meta:
@@ -51,3 +71,14 @@ class ShopSerializer(ModelSerializer):
     class Meta:
         model = Shop
         fields = '__all__'
+
+
+class UserTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+
+        # Add custom claims
+        token['user'] = user.username
+
+        return token
