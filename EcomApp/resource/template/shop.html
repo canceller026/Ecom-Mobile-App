@@ -1,5 +1,5 @@
 {% extends 'main.html' %} {% load static %} {% block title %}
-<title>Listing - Brand</title>
+<title>Shop - Brand</title>
 {% endblock title %} {% block content %}
 <header class="bg-dark" style="background: rgb(300, 150, 50)">
   <div
@@ -25,13 +25,13 @@
 <section class="bg-light h-100">
   <div class="content bg-light">
       
-      {% for item in listings %}
+      {% for item in shops %}
           <div class="text-bg-light p-3">
             <img src="{% static 'img/box.png' %}" width="100" height="100" />
             <div class="card-body">
-                <h3>{{item.poster.name}}</h3>
-                <h4>{{item.list_type}}</h4>
-                <p>{{item.list_description}}</p>
+                <h3>{{item.shop_name}}</h3>
+                <h4>{{item.shop_description}}</h4>
+                <p>{{item.shop_RAING}}</p>
             </div>
           </div>
       {% endfor %}

@@ -81,4 +81,16 @@ def ProductView(request):
 
 @login_required(login_url=reverse_lazy('login'))
 def ListingView(request):
-    return render(request, 'listing.html')
+    data = Listing.objects.all()
+    listings = {"listings":data}
+    return render(request, 'listing.html',{"listings":data})
+
+@login_required(login_url=reverse_lazy('login'))
+def ShopView(request):
+    data = Shop.objects.all()
+    return render(request, 'shop.html',{"shops":data})
+
+@login_required(login_url=reverse_lazy('login'))
+def ShopView(request, pk):
+    data = Shop.objects.get(id=pk)
+    return render(request, 'shop.html',{"shops":data})
