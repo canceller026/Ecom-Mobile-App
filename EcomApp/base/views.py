@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.urls import reverse_lazy, reverse
+from django.db import connection
 from .models import *
 from .forms import *
 
@@ -91,6 +92,7 @@ def ShopView(request):
     return render(request, 'shop.html',{"shops":data})
 
 @login_required(login_url=reverse_lazy('login'))
-def ShopView(request, pk):
-    data = Shop.objects.get(id=pk)
-    return render(request, 'shop.html',{"shops":data})
+def ShopViewID(request, pk):
+    data = Product.objects.filter(shop=pk)
+    print(data)
+    return render(request, 'shop_id.html',{"product":data})

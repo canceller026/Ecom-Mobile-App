@@ -103,7 +103,7 @@
 # def getAllListingByUser(request, username):
 #     cursor = connection.cursor()
 #     cursor.callproc("listAllListing", [username])
-#     ret = cursor.fetchall()
+#     ret = cursor.fetch    all()
 #     cursor.close()
 #     return Response(ret)
 

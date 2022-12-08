@@ -25,18 +25,16 @@
 <section class="bg-light h-100">
   <div class="content bg-light">
       
-      {% for item in shops %}
+      {% for item in product %}
           <div class="text-bg-light p-3">
             <img src="{% static 'img/box.png' %}" width="100" height="100" />
             <div class="card-body">
-                <h3>{{item.shop_name}}</h3>
-                <h4>{{item.shop_description}}</h4>
-                <p>{{item.shop_rating}}</p>
-                <p>{{item.id}}</p>
+              <h4>{{item.pro_name}}</h4>
+              <p>{{item.pro_description}}</p>
+              <p>{{item.cat.cat_name}}</p>
+              <p>${{item.price}}</p>
             </div>
           </div>
-          <a type = "btn btn-lg btn-info" href="{% url 'shop-id' item.id %}">View Shop</a>
-
       {% endfor %}
         
     </div>
