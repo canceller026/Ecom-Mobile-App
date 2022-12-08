@@ -74,6 +74,11 @@ def LogoutView(request):
 
 @login_required(login_url=reverse_lazy('login'))
 def CartView(request):
+    carts = Added.objects.all()
+    n = len(carts)
+    for i in range(n):
+        carts[i].product = Product.objects.get(id=carts[i].product_id)
+    context = {'carts' : carts}
     return render(request, 'cart.html')
 
 @login_required(login_url=reverse_lazy('login'))
